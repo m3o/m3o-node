@@ -2,8 +2,8 @@ import * as request from 'request-promise-native';
 import * as WebSocket from 'ws';
 import * as url from 'url';
 
-const defaultLocal = 'http://localhost:8080/client';
-const defaultLive = 'https://api.micro.mu/client';
+const defaultLocal = 'http://localhost:8080/';
+const defaultLive = 'https://api.m3o.com/';
 
 export interface ClientRequest {
   // eg. "go.micro.srv.greeter"
@@ -74,29 +74,28 @@ export class Client {
 
   // Call enables you to access any endpoint of any service on Micro
   call<R>(service: string, endpoint: string, req?: any): Promise<R> {
-    return new Promise<R>(async (resolve, reject) => {
+    return new Promise<R>((resolve, reject) => {
       try {
         // example curl: curl -XPOST -d '{"service": "go.micro.srv.greeter", "endpoint": "Say.Hello"}'
         //  -H 'Content-Type: application/json' http://localhost:8080/client {"body":"eyJtc2ciOiJIZWxsbyAifQ=="}
         if (!req) {
           req = {};
         }
-        var options: request.RequestPromiseOptions = {
+        let headers: any = {};
+        if (this.options.token) {
+          headers['authorization'] = 'Bearer ' + this.options.token;
+        }
+        var options = {
           method: 'POST',
           json: true,
-          headers: {
-            authorization: 'Bearer ' + this.options.token,
-          },
+          headers: headers,
           body: JSON.stringify(req),
+          url: this.options.address + '/v1/' + service + '/' + endpoint,
         };
-        (options as any).uri =
-          this.options.address + '/v1/' + service + '/' + endpoint;
 
-        const response: R = await request.post(
-          this.options.address as string,
-          options
-        );
-        resolve(response);
+        request.post(options, function (error, response, body) {
+          resolve(JSON.parse(body));
+        });
       } catch (e) {
         reject(e);
       }
