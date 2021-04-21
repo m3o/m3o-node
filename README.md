@@ -14,11 +14,13 @@ npm install --save @microhq/node-client
 Assuming you have the helloworld service running locally (do `micro run github.com/micro/examples/helloworld`):
 
 ```js
-const { Client } = require("@microhq/node-client");
+const m3o = require('@m3o/m3o-node');
 
-new Client({local: true}).call("helloworld", "Helloworld.Call", {"name": "John"}).then(response => {
-	console.log(response)
-})
+new m3o.Client({ token: 'INSERT_YOUR_YOUR_M3O_TOKEN_HERE' })
+  .call('helloworld', 'call', {"name": "John"})
+  .then((response) => {
+    console.log(response);
+  });
 ```
 
 The output will be:
@@ -38,6 +40,8 @@ If you want to change the address, assuming you run the [client api](https://git
 ```js
 new Client({address: "https://api.mydomain.com/client"})
 ```
+
+@TODO streaming is broken right now
 
 ## Streaming
 

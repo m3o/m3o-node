@@ -1,6 +1,6 @@
 {
-  "name": "@microhq/node-client",
-  "version": "0.1.4",
+  "name": "@m3o/m3o-node",
+  "version": "0.0.7",
   "description": "Generic client for all Micro services.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -9,17 +9,14 @@
     "build": "tsc"
   },
   "license": "Apache-2.0",
-  "author": {
-    "name": "Asim Aslam",
-    "email": "asim@micro.mu"
-  },
+  "author": "Asim Aslam <asim@micro.mu>",
   "keywords": [
     "typescript",
     "node"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/micro/clients.git"
+    "url": "git+https://github.com/micro/clients.git"
   },
   "devDependencies": {
     "@types/request-promise-native": "^1.0.17",
@@ -29,8 +26,16 @@
   },
   "dependencies": {
     "@types/ws": "^7.2.2",
+    "axios": "^0.21.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
     "ws": "^7.2.3"
+  },
+  "bugs": {
+    "url": "https://github.com/micro/clients/issues"
+  },
+  "homepage": "https://github.com/micro/clients#readme",
+  "directories": {
+    "lib": "lib"
   }
 }

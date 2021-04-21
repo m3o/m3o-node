@@ -1,19 +1,10 @@
-import * as request from "request-promise-native";
-import * as WebSocket from "ws";
-import * as url from "url";
+import * as request from 'request-promise-native';
+import * as WebSocket from 'ws';
+import * as axios from 'axios';
+import * as url from 'url';
 
-const defaultLocal = "http://localhost:8080/client";
-const defaultLive = "https://api.micro.mu/client";
-
-export interface Options {
-  token?: string;
-  // Address of the micro platform.
-  // By default it connects to live. Change it or use the local flag
-  // to connect to your local installation.
-  address?: string;
-  // Helper flag to help users connect to the default local address
-  local?: boolean;
-}
+const defaultLocal = 'http://localhost:8080/';
+const defaultLive = 'https://api.m3o.com/';
 
 export interface ClientRequest {
   // eg. "go.micro.srv.greeter"
@@ -27,6 +18,16 @@ export interface ClientRequest {
 export interface ClientResponse {
   // json and base64 encoded response body
   body: string;
+}
+
+export interface Options {
+  token?: string;
+  // Address of the micro platform.
+  // By default it connects to live. Change it or use the local flag
+  // to connect to your local installation.
+  address?: string;
+  // Helper flag to help users connect to the default local address
+  local?: boolean;
 }
 
 export class Stream {
@@ -48,7 +49,7 @@ export class Stream {
 
   // this probably should use observables or something more modern
   recv(cb: (msg: any) => void) {
-    this.conn.on("message", (m: string) => {
+    this.conn.on('message', (m: string) => {
       cb(unmarshalResponse(m));
     });
   }
@@ -56,47 +57,52 @@ export class Stream {
 
 export class Client {
   public options: Options = {
-    address: defaultLive
+    address: defaultLive,
   };
 
   constructor(options?: Options) {
-    if (options) {
-      this.options = options;
+    this.options = {
+      address: defaultLive,
+    };
+    if (options && options.token) {
+      this.options.token = options.token;
     }
     if (options && options.local) {
       this.options.address = defaultLocal;
+      this.options.local = true;
     }
   }
 
   // Call enables you to access any endpoint of any service on Micro
   call<R>(service: string, endpoint: string, req?: any): Promise<R> {
-    return new Promise<R>(async (resolve, reject) => {
+    return new Promise<R>((resolve, reject) => {
       try {
         // example curl: curl -XPOST -d '{"service": "go.micro.srv.greeter", "endpoint": "Say.Hello"}'
         //  -H 'Content-Type: application/json' http://localhost:8080/client {"body":"eyJtc2ciOiJIZWxsbyAifQ=="}
         if (!req) {
           req = {};
         }
-        const serviceReq: ClientRequest = {
-          service: service,
-          endpoint: endpoint,
-          body: Buffer.from(JSON.stringify(req)).toString("base64")
-        };
-        var options: request.RequestPromiseOptions = {
-          method: "POST",
-          json: true,
-          headers: {
-            micro_token: this.options.token
-          },
-          body: serviceReq
-        };
-        (options as any).uri = this.options.address;
+        let headers: any = {};
 
-        const result: ClientResponse = await request.post(
-          this.options.address as string,
-          options
-        );
-        resolve(JSON.parse(Buffer.from(result.body, "base64").toString()));
+        if (this.options.token) {
+          headers['authorization'] = 'Bearer ' + this.options.token;
+        }
+        var options = {
+          //method: 'POST',
+          json: true,
+          headers: headers,
+          body: req,
+          url: this.options.address + '/v1/' + service + '/' + endpoint,
+        };
+
+        axios.default
+          .post(options.url, options.body, options)
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       } catch (e) {
         reject(e);
       }
@@ -109,24 +115,24 @@ export class Client {
         const uri = url.parse(this.options.address as string);
 
         // TODO: make optional
-        uri.path = "/client/stream";
-        uri.pathname = "/client/stream";
+        uri.path = '/client/stream';
+        uri.pathname = '/client/stream';
 
-        uri.protocol = (uri.protocol as string).replace("http", "ws");
+        uri.protocol = (uri.protocol as string).replace('http', 'ws');
 
         const conn = new WebSocket(url.format(uri), {
           //perMessageDeflate: false
         });
 
         const data = marshalRequest(service, endpoint, msg);
-        conn.on("open", function open() {
+        conn.on('open', function open() {
           conn.send(data);
           const stream = new Stream(conn, service, endpoint);
           resolve(stream);
           conn.on;
         });
-        conn.on("close", function close(e, reason) {});
-        conn.on("error", function err(e) {});
+        conn.on('close', function close(e, reason) {});
+        conn.on('error', function err(e) {});
       } catch (e) {
         reject(e);
       }
@@ -139,11 +145,11 @@ function marshalRequest(service: string, endpoint: string, v: any): string {
   return JSON.stringify({
     service: service,
     endpoint: endpoint,
-    body: Buffer.from(jsonBody).toString("base64")
+    body: Buffer.from(jsonBody).toString('base64'),
   });
 }
 
 function unmarshalResponse(msg: string): any {
   const rsp: ClientResponse = JSON.parse(msg);
-  return Buffer.from(rsp.body, "base64").toString();
+  return Buffer.from(rsp.body, 'base64').toString();
 }
