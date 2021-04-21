@@ -1,5 +1,6 @@
 import * as request from 'request-promise-native';
 import * as WebSocket from 'ws';
+import * as axios from 'axios';
 import * as url from 'url';
 
 const defaultLocal = 'http://localhost:8080/';
@@ -82,20 +83,26 @@ export class Client {
           req = {};
         }
         let headers: any = {};
+
         if (this.options.token) {
           headers['authorization'] = 'Bearer ' + this.options.token;
         }
         var options = {
-          method: 'POST',
+          //method: 'POST',
           json: true,
           headers: headers,
-          body: JSON.stringify(req),
+          body: req,
           url: this.options.address + '/v1/' + service + '/' + endpoint,
         };
 
-        request.post(options, function (error, response, body) {
-          resolve(JSON.parse(body));
-        });
+        axios.default
+          .post(options.url, options.body, options)
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       } catch (e) {
         reject(e);
       }
