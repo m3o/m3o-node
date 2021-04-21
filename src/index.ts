@@ -5,6 +5,20 @@ import * as url from 'url';
 const defaultLocal = 'http://localhost:8080/client';
 const defaultLive = 'https://api.micro.mu/client';
 
+export interface ClientRequest {
+  // eg. "go.micro.srv.greeter"
+  service: string;
+  // eg. "Say.Hello"
+  endpoint: string;
+  // json and then base64 encoded body
+  body: string;
+}
+
+export interface ClientResponse {
+  // json and base64 encoded response body
+  body: string;
+}
+
 export interface Options {
   token?: string;
   // Address of the micro platform.
