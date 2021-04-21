@@ -41,6 +41,8 @@ If you want to change the address, assuming you run the [client api](https://git
 new Client({address: "https://api.mydomain.com/client"})
 ```
 
+@TODO streaming is broken right now
+
 ## Streaming
 
 ```js
