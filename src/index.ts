@@ -95,8 +95,8 @@ export class Client {
           url: this.options.address + '/v1/' + service + '/' + endpoint,
         };
 
-        axios.default
-          .post(options.url, options.body, options)
+        axios
+          .default(options)
           .then((res) => {
             resolve(res.data);
           })
