@@ -79,7 +79,7 @@ export class Client {
       try {
         // example curl: curl -XPOST -d '{"service": "go.micro.srv.greeter", "endpoint": "Say.Hello"}'
         //  -H 'Content-Type: application/json' http://localhost:8080/client {"body":"eyJtc2ciOiJIZWxsbyAifQ=="}
-        if (!req) {
+        if (req === undefined || req === null) {
           req = {};
         }
         let headers: any = {};
@@ -87,21 +87,26 @@ export class Client {
         if (this.options.token) {
           headers['authorization'] = 'Bearer ' + this.options.token;
         }
-        var options = {
-          //method: 'POST',
-          json: true,
+        var options: axios.AxiosRequestConfig = {
+          method: 'post',
+          //json: true,
+          responseType: 'json',
           headers: headers,
-          body: req,
-          url: this.options.address + '/v1/' + service + '/' + endpoint,
+          data: req,
+          url: this.options.address + 'v1/' + service + '/' + endpoint,
         };
-
-        axios
+ 
+        return axios
           .default(options)
           .then((res) => {
             resolve(res.data);
           })
-          .catch((err) => {
-            reject(err);
+          .catch((error) => {
+            if (error.response) {
+              reject(error.response.data);
+              return;
+            }
+            reject(error);
           });
       } catch (e) {
         reject(e);
