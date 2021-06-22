@@ -25,7 +25,7 @@ new m3o.Client({ token: 'INSERT_YOUR_YOUR_M3O_TOKEN_HERE' })
 
 The output will be:
 ```
-{ msg: 'Hello John' }
+{ message: 'Hello John' }
 ```
 
 ## Streaming
