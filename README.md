@@ -10,7 +10,8 @@ npm install --save @m3o/m3o-node
 ```
 
 ## Request
-Assuming you have the helloworld service running locally (do `micro run github.com/micro/examples/helloworld`):
+
+Make a standard http request
 
 ```js
 const m3o = require('@m3o/m3o-node');
@@ -28,6 +29,8 @@ The output will be:
 ```
 
 ## Streaming
+
+Make a websocket streaming request
 
 ```js
 const client = require("@m3o/m3o-node")
