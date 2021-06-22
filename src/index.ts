@@ -43,14 +43,14 @@ export class Stream {
 
   send(msg: any): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
-      this.conn.send(marshalRequest(this.service, this.endpoint, msg));
+      this.conn.send(msg);
     });
   }
 
   // this probably should use observables or something more modern
   recv(cb: (msg: any) => void) {
     this.conn.on('message', (m: string) => {
-      cb(unmarshalResponse(m));
+      cb(JSON.parse(m));
     });
   }
 }
@@ -120,18 +120,20 @@ export class Client {
         const uri = url.parse(this.options.address as string);
 
         // TODO: make optional
-        uri.path = '/client/stream';
-        uri.pathname = '/client/stream';
+        uri.path = '/v1/' + service + '/' + endpoint;
+        uri.pathname = '/v1/' + service + '/' + endpoint;
 
         uri.protocol = (uri.protocol as string).replace('http', 'ws');
 
         const conn = new WebSocket(url.format(uri), {
-          //perMessageDeflate: false
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + this.options.token,
+            },
         });
 
-        const data = marshalRequest(service, endpoint, msg);
         conn.on('open', function open() {
-          conn.send(data);
+          conn.send(JSON.stringify(msg));
           const stream = new Stream(conn, service, endpoint);
           resolve(stream);
           conn.on;
