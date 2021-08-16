@@ -95,7 +95,7 @@ export class Client {
           data: req,
           url: this.options.address + 'v1/' + service + '/' + endpoint,
         };
- 
+
         return axios
           .default(options)
           .then((res) => {
@@ -126,10 +126,10 @@ export class Client {
         uri.protocol = (uri.protocol as string).replace('http', 'ws');
 
         const conn = new WebSocket(url.format(uri), {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + this.options.token,
-            },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.options.token,
+          },
         });
 
         conn.on('open', function open() {
@@ -160,3 +160,8 @@ function unmarshalResponse(msg: string): any {
   const rsp: ClientResponse = JSON.parse(msg);
   return Buffer.from(rsp.body, 'base64').toString();
 }
+
+export default {
+  Client,
+  Stream,
+};
