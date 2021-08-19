@@ -1,14 +1,16 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
-      "declaration": true,
-      "lib" : ["es2015", "dom"],
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "outDir": "./lib",
-      "strict": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["src/**/*.spec.*"]
-  }
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "lib": ["es2015", "dom"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "./lib",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.spec.*", "./node_modules"]
+}
