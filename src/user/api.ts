@@ -5,10 +5,10 @@ export function User(): UserApi {
   const userService = makeService<UserMethods>('user');
 
   return {
-    delete: id => userService.request('Delete', {id}),
+    delete: payload => userService.request('Delete', payload),
     getById: id => userService.request('Read', {id}),
     login: payload => userService.request('Login', payload),
-    logout: sessionId => userService.request('Logout', {sessionId}),
+    logout: payload => userService.request('Logout', payload),
     readSession: (sessionId: string) =>
       userService.request('ReadSession', {sessionId}),
     sendVerificationEmail: payload =>

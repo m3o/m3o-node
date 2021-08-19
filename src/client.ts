@@ -1,4 +1,4 @@
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import * as axios from 'axios';
 import * as url from 'url';
 import {Stream} from './stream';

@@ -73,11 +73,19 @@ export type LoginUserResponse = {
   };
 };
 
-type Delete = (id: string) => Promise<void>;
+export type LogoutPayload = {
+  sessionId: string;
+};
+
+export type DeletePayload = {
+  id: string;
+};
+
+type Delete = (payload: DeletePayload) => Promise<void>;
 type SignUp = (payload: CreateUserPayload) => Promise<UserResponse>;
 type Login = (payload: CreateUserPayload) => Promise<LoginUserResponse>;
 type GetById = (id: string) => Promise<UserResponse>;
-type Logout = (sessionId: string) => Promise<void>;
+type Logout = (payload: LogoutPayload) => Promise<void>;
 type ReadSession = (sessionId: string) => Promise<UserSession>;
 type SendVerificationEmail = (
   payload: SendVerificationPayload,

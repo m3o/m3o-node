@@ -1,3 +1,5 @@
+import WebSocket from 'ws';
+
 export class Stream {
   conn: WebSocket;
   service: string;
