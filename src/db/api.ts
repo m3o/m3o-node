@@ -2,7 +2,7 @@ import {makeService} from '../helpers';
 import {DBApi, DBMethods} from './types';
 
 export function DB<RecordType>(): DBApi<RecordType> {
-  const dbService = makeService<DBMethods>('user');
+  const dbService = makeService<DBMethods>('db');
 
   return {
     create: payload => dbService.request('Create', payload),
