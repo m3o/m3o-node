@@ -1,7 +1,7 @@
 import {makeService} from '../helpers';
 import {DBApi, DBMethods} from './types';
 
-export function DB<RecordType>(): DBApi<RecordType> {
+export function DBTable<RecordType, TableName>(): DBApi<RecordType, TableName> {
   const dbService = makeService<DBMethods>('db');
 
   return {

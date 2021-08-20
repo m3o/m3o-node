@@ -1,17 +1,17 @@
 export type DBMethods = 'Create' | 'Delete' | 'Read' | 'Truncate' | 'Update';
 
-export type DBCreatePayload<R> = {
+export type DBCreatePayload<R, TN> = {
   record: R;
-  table: string;
+  table: TN;
 };
 
 export type DBCreateResponse = {
   id: string;
 };
 
-export type DBDeletePayload = {
+export type DBDeletePayload<TN> = {
   id: string;
-  table: string;
+  table: TN;
 };
 
 export type DBReadPayload = {
@@ -28,38 +28,40 @@ export type DBReadResponse<R> = {
   records?: R[];
 };
 
-export type DBCreate<R> = (
-  payload: DBCreatePayload<R>,
+export type DBCreate<R, TN> = (
+  payload: DBCreatePayload<R, TN>,
 ) => Promise<DBCreateResponse>;
 
-export type DBTruncatePayload = {
-  table?: string;
+export type DBTruncatePayload<TN> = {
+  table?: TN;
 };
 
 export type DBTruncateTableResponse = {
   table: string;
 };
 
-export type DBUpdatePayload<R> = {
+export type DBUpdatePayload<R, TN> = {
   id: string;
   record: R;
-  table?: string;
+  table?: TN;
 };
 
-export type DBDelete = (payload: DBDeletePayload) => Promise<void>;
+export type DBDelete<TN> = (payload: DBDeletePayload<TN>) => Promise<void>;
 
 export type DBRead<R> = (payload: DBReadPayload) => Promise<DBReadResponse<R>>;
 
-export type DBTruncate = (
-  payload: DBTruncatePayload,
+export type DBTruncate<TN> = (
+  payload: DBTruncatePayload<TN>,
 ) => Promise<DBTruncateTableResponse>;
 
-export type DBUpdate<R> = (payload: DBUpdatePayload<R>) => Promise<void>;
+export type DBUpdate<R, TN> = (
+  payload: DBUpdatePayload<R, TN>,
+) => Promise<void>;
 
-export type DBApi<R> = {
-  create: DBCreate<R>;
-  delete: DBDelete;
+export type DBApi<R, TN> = {
+  create: DBCreate<R, TN>;
+  delete: DBDelete<TN>;
   read: DBRead<R>;
-  truncate: DBTruncate;
-  update: DBUpdate<R>;
+  truncate: DBTruncate<TN>;
+  update: DBUpdate<R, TN>;
 };
