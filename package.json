@@ -1,6 +1,6 @@
 {
   "name": "@m3o/m3o-node",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Generic client for all Micro services.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -48,6 +48,7 @@
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "dotenv": "^10.0.0",
+    "jsonfile": "^6.1.0",
     "rollup-plugin-typescript2": "^0.30.0",
     "ws": "^7.2.3"
   },
