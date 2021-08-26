@@ -2,7 +2,6 @@ require('dotenv').config();
 
 import * as express from 'express';
 import * as http from 'http';
-import {User} from './lib/user';
 
 const app = express();
 const server = http.createServer(app);
