@@ -3,6 +3,7 @@ import * as axios from 'axios';
 import * as url from 'url';
 import {Stream} from './stream';
 
+const defaultPrefix = 'v1/';
 const defaultLocal = 'http://localhost:8080/';
 const defaultLive = 'https://api.m3o.com/';
 
@@ -12,25 +13,44 @@ export interface Options {
   // By default it connects to live. Change it or use the local flag
   // to connect to your local installation.
   address?: string;
+  // Helper flag to set the url prefix of the server
+  prefix?: string;
   // Helper flag to help users connect to the default local address
   local?: boolean;
 }
 
+/**
+ *
+ */
+export interface ClientOptions {
+  token?: string;
+  address: string;
+  prefix: string;
+  local: boolean;
+}
+
 export class Client {
-  public options: Options = {
+  public options: ClientOptions = {
     address: defaultLive,
+    prefix: defaultPrefix,
+    local: false,
   };
 
   constructor(options?: Options) {
-    this.options = {
-      address: defaultLive,
-    };
-    if (options && options.token) {
-      this.options.token = options.token;
-    }
-    if (options && options.local) {
-      this.options.address = defaultLocal;
-      this.options.local = true;
+    if (options) {
+      if (options.token) {
+        this.options.token = options.token;
+      }
+      if (options.local) {
+        this.options.local = true;
+        this.options.address = defaultLocal;
+      }
+      if (options.address) {
+        this.options.address = options.address;
+      }
+      if (options.prefix) {
+        this.options.prefix = options.prefix;
+      }
     }
   }
 
@@ -56,7 +76,7 @@ export class Client {
           responseType: 'json',
           headers: headers,
           data: req,
-          url: this.options.address + 'v1/' + service + '/' + endpoint,
+          url: this.options.address + this.options.prefix + service + '/' + endpoint,
         };
 
         return axios
@@ -83,8 +103,8 @@ export class Client {
         const uri = url.parse(this.options.address as string);
 
         // TODO: make optional
-        uri.path = '/v1/' + service + '/' + endpoint;
-        uri.pathname = '/v1/' + service + '/' + endpoint;
+        uri.path = '/' + this.options.prefix + service + '/' + endpoint;
+        uri.pathname = '/' + this.options.prefix + service + '/' + endpoint;
 
         uri.protocol = (uri.protocol as string).replace('http', 'ws');
 
