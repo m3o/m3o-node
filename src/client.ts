@@ -48,7 +48,7 @@ export class Client {
       if (options.address) {
         this.options.address = options.address;
       }
-      if (options.prefix) {
+      if (typeof options.prefix == 'string') {
         this.options.prefix = options.prefix;
       }
     }
