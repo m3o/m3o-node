@@ -55,13 +55,17 @@ export class Client {
   }
 
   // Call enables you to access any endpoint of any service on Micro
-  call<R>(service: string, endpoint: string, req?: any): Promise<R> {
-    return new Promise<R>((resolve, reject) => {
+  call<Request, Response>(
+    service: string,
+    endpoint: string,
+    req?: Request,
+  ): Promise<Response> {
+    return new Promise<Response>((resolve, reject) => {
       try {
         // example curl: curl -XPOST -d '{"service": "go.micro.srv.greeter", "endpoint": "Say.Hello"}'
         //  -H 'Content-Type: application/json' http://localhost:8080/client {"body":"eyJtc2ciOiJIZWxsbyAifQ=="}
         if (req === undefined || req === null) {
-          req = {};
+          req = {} as Request;
         }
 
         const headers: any = {};
