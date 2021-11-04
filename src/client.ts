@@ -128,10 +128,7 @@ export class Client {
           conn.send(JSON.stringify(msg));
           const stream = new Stream<Request, Response>(conn, service, endpoint);
           resolve(stream);
-          conn.on;
         });
-        //conn.on('close', function close(e, reason) {});
-        //conn.on('error', function err(e) {});
       } catch (e) {
         reject(e);
       }
