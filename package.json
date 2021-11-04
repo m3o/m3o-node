@@ -1,6 +1,6 @@
 {
   "name": "@m3o/m3o-node",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "M3O Node.js Client",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
