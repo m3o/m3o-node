@@ -23,22 +23,28 @@ export class Stream<Request, Response> {
     });
   }
 
-  // receive messages
+  // DEPRECATED!
+  // Receive messages. same as onError and only here for backwards compatibility
   recv(cb: (msg: Response) => void): void {
+    this.onMessage(cb);
+  }
+
+  // Register a callback to receive messages
+  onMessage(cb: (msg: Response) => void): void {
     this.conn.on('message', (m: string) => {
       cb(JSON.parse(m));
     });
   }
 
-  // register callback for errors
-  error(errCb: (err: Error) => void): void {
+  // Register a callback for errors
+  onError(errCb: (err: Error) => void): void {
     this.conn.on('error', function err(e) {
       errCb(e);
     });
   }
 
-  // register callback for close event
-  close(closeCb: (err: Error) => void): void {
+  // Register a callback for when the stream is closed
+  onClose(closeCb: (err: Error) => void): void {
     this.conn.on('close', function close(e, reason) {
       closeCb(new Error('closed with error ' + reason));
     });
