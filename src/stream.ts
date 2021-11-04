@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 
-export class Stream {
+export class Stream<Request, Response> {
   conn: WebSocket;
   service: string;
   endpoint: string;
@@ -11,16 +11,36 @@ export class Stream {
     this.endpoint = endpoint;
   }
 
-  send(msg: any): Promise<void> {
+  send(msg: Request): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.conn.send(msg);
+      this.conn.send(msg, function (err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
     });
   }
 
-  // this probably should use observables or something more modern
-  recv(cb: (msg: any) => void) {
+  // receive messages
+  recv(cb: (msg: Response) => void): void {
     this.conn.on('message', (m: string) => {
       cb(JSON.parse(m));
+    });
+  }
+
+  // register callback for errors
+  error(errCb: (err: Error) => void): void {
+    this.conn.on('error', function err(e) {
+      errCb(e);
+    });
+  }
+
+  // register callback for close event
+  close(closeCb: (err: Error) => void): void {
+    this.conn.on('close', function close(e, reason) {
+      closeCb(new Error('closed with error ' + reason));
     });
   }
 }
