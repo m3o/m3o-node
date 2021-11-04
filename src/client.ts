@@ -76,7 +76,12 @@ export class Client {
           responseType: 'json',
           headers: headers,
           data: req,
-          url: this.options.address + this.options.prefix + service + '/' + endpoint,
+          url:
+            this.options.address +
+            this.options.prefix +
+            service +
+            '/' +
+            endpoint,
         };
 
         return axios
@@ -97,8 +102,12 @@ export class Client {
     });
   }
 
-  stream(service: string, endpoint: string, msg?: any): Promise<Stream> {
-    return new Promise<Stream>((resolve, reject) => {
+  stream<Request, Response>(
+    service: string,
+    endpoint: string,
+    msg?: Request,
+  ): Promise<Stream<Request, Response>> {
+    return new Promise<Stream<Request, Response>>((resolve, reject) => {
       try {
         const uri = url.parse(this.options.address as string);
 
@@ -117,12 +126,9 @@ export class Client {
 
         conn.on('open', function open() {
           conn.send(JSON.stringify(msg));
-          const stream = new Stream(conn, service, endpoint);
+          const stream = new Stream<Request, Response>(conn, service, endpoint);
           resolve(stream);
-          conn.on;
         });
-        conn.on('close', function close(e, reason) {});
-        conn.on('error', function err(e) {});
       } catch (e) {
         reject(e);
       }
